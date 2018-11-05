@@ -1,11 +1,25 @@
-version: "3"
+version: '3'
 services:
-  exercise4:
-    build: .
+  myapp:
+    build: ./service/.
+    # command: 
+    #   - nodemon 
+    #   - server.js
     ports:
      - "9004:9004"
+    environment:
+      - MSG_SERV=messageapp
+      - SERVICE_PORT=3000
+      - CLIENT_PORT=9004
+      - DB_SERV=mongodb
+      - DB_PORT=27017
+      - DB_NAME=message_app
+      - DB_HOSTNAME=mongodb
+    depends_on:
+      - "mongodb"
+    command: ["./wait-for-it.sh", "mongodb:27017", "-t", "5", "--", "nodemon", "index.js"]
   messageapp:
-    image: cabify/backend-bootcamp-messageapp
+    image: "cabify/backend-bootcamp-messageapp:latest"
     ports:
       - "3000:3000"
   mongodb:
